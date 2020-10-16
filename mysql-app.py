@@ -48,6 +48,23 @@ def find_person(keyword):
         result = [{"name" : "Not Found", "number": "Not Found"}]
     return result
 
+def find_one(keyword):
+    query=f"SELECT id, person, number FROM phonebook WHERE person like '{keyword}';"
+    cursor.execute(query)
+    raw_result = cursor.fetchone()
+    return raw_result  # tupple
+
+def delete_person(keyword):
+    result = find_one(keyword)
+    if result == None:
+        return f"There is no record with {keyword}, no record deleted."
+    query=f"DELETE FROM phonebook WHERE id = {result[0]}"
+    cursor.execute(query)
+    return f"The record deleted, it was: {result[1]} -- {result[2]}."
+
+
+
+
 # Routings
 # index page
 @app.route("/", methods=["GET", "POST"])
@@ -60,8 +77,22 @@ def main():
         return render_template("index.html", developer_name=developer, show_result=False)
 
 
+# delete
+@app.route("/delete",  methods = ["GET", "POST"])
+def delete():
+    if request.method == "POST":
+        username=request.form["username"].strip().title()
+        if username.isnumeric():
+            return render_template("delete.html", developer_name=developer, not_valid=True, show_result=False, message=f"Username is cannot be numeric '{username}'")
+
+        result = delete_person(username)
+
+        return render_template("delete.html", developer_name=developer, not_valid=False,show_result=True, result=result)
+    else:
+        return render_template("delete.html", developer_name=developer, not_valid=False,show_result=False)
 
 
+# add
 
 
 
