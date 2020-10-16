@@ -80,6 +80,9 @@
             {% endfor %}
             </ul>
     {% endif %}
+    {% if no_result %}
+        <h4 style="color: red">There is no result for {{ keyword }}</h4>
+    {% endif %}
   </form>
 
   <p class="footnote"><i>This app is developed in Python by <b>{{ developer_name }}</b> and deployed with Flask on AWS Cloud using Clouldformation Service.</i></p>
