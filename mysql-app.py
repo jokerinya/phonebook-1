@@ -4,7 +4,7 @@ from flaskext.mysql import MySQL
 app = Flask(__name__)
 
 app.config['MYSQL_DATABASE_HOST'] = 'localhost'
-app.config['MYSQL_DATABASE_USER'] = 'admin'
+app.config['MYSQL_DATABASE_USER'] = 'root'
 app.config['MYSQL_DATABASE_PASSWORD'] = 'Ankara06'
 app.config['MYSQL_DATABASE_DB'] = 'clarusway'
 app.config['MYSQL_DATABASE_PORT'] = 3306
@@ -26,9 +26,17 @@ CREATE TABLE phonebook (
   PRIMARY KEY (id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 """
+data="""
+INSERT INTO phonebook(person, number)
+VALUES
+    ("Buddy Rich", "999999999999" ),
+    ("Candido", "11111111111111"),
+	  ("Charlie Byrd", "123456789");
+"""
 
 cursor.execute(drop_table)
 cursor.execute(phonebook_table)
+cursor.execute(data)
 
 
 
