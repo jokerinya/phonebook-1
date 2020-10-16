@@ -39,7 +39,7 @@ cursor.execute(drop_table)
 cursor.execute(phonebook_table)
 cursor.execute(data)
 
-def find_person(keyword):
+def find_persons(keyword):
     query=f"SELECT person, number FROM phonebook WHERE person like '%{keyword}%';"
     cursor.execute(query)
     raw_result = cursor.fetchall()  # tuple type
@@ -62,7 +62,21 @@ def delete_person(keyword):
     cursor.execute(query)
     return f"The record deleted, it was: {result[1]} -- {result[2]}."
 
+def add_person(username, phonenumber):
+    query=f"""INSERT INTO phonebook(person, number) VALUES ("{username}", "{phonenumber}");"""
+    cursor.execute(query)
 
+def validation(username, phonenumber):
+    if username=="" or username==None:
+        return "Invalid input: Name can not be empty"
+    elif phonenumber=="" or phonenumber==None:
+        return "Invalid input: Phone number can not be empty"
+    elif not username.isalpha():
+        return "Invalid input: Name of person should be text"
+    elif not phonenumber.isnumeric():
+        return  "Invalid input: Phone number should be in numeric format"
+    else:
+        return "ok"
 
 
 # Routings
@@ -71,7 +85,7 @@ def delete_person(keyword):
 def main():
     if request.method=="POST":
         keyword = request.form["username"].strip().title()
-        persons = find_person(keyword)
+        persons = find_persons(keyword)
         return render_template("index.html", developer_name=developer, show_result=True ,no_result=False, keyword=keyword, persons=persons)
     else:
         return render_template("index.html", developer_name=developer, show_result=False)
@@ -93,6 +107,24 @@ def delete():
 
 
 # add
+@app.route("/add", methods=["GET", "POST"])
+def add():
+    if request.method=="GET":
+        return render_template("add-update.html", developer_name=developer, action_name="Add", not_valid=False, show_result=False)
+
+    username=request.form["username"].strip().title()
+    phonenumber=request.form["phonenumber"].strip()
+    message = validation(username, phonenumber)
+    if message == "ok":
+        person_info = find_one(username)
+        if person_info == None:
+            add_person(username, phonenumber)
+            result=f"Record added ({username}, {phonenumber})"
+        else:
+            result=f"Record is already exist, ({person_info[1]}, {person_info[2]})"
+        return render_template("add-update.html", developer_name=developer, action_name="Add", not_valid=False, show_result=True, result=result)
+    else:
+        return render_template("add-update.html", developer_name=developer, action_name="Add", not_valid=True, show_result=False, message=message)
 
 
 
