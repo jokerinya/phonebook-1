@@ -27,7 +27,7 @@ CREATE TABLE phonebook (
   PRIMARY KEY (id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 """
-data="""
+sample_data="""
 INSERT INTO phonebook(person, number)
 VALUES
     ("Buddy Rich", "999999999999" ),
@@ -37,7 +37,7 @@ VALUES
 
 cursor.execute(drop_table)
 cursor.execute(phonebook_table)
-cursor.execute(data)
+cursor.execute(sample_data)
 
 def find_persons(keyword):
     query=f"SELECT person, number FROM phonebook WHERE person like '%{keyword}%';"
@@ -77,6 +77,12 @@ def validation(username, phonenumber):
         return  "Invalid input: Phone number should be in numeric format"
     else:
         return "ok"
+
+def update_person(id, new_phonenumber):
+    query=f"""
+        UPDATE phonebook SET number="{new_phonenumber}" WHERE id={id};
+    """
+    cursor.execute(query)
 
 
 # Routings
@@ -125,6 +131,26 @@ def add():
         return render_template("add-update.html", developer_name=developer, action_name="Add", not_valid=False, show_result=True, result=result)
     else:
         return render_template("add-update.html", developer_name=developer, action_name="Add", not_valid=True, show_result=False, message=message)
+
+# update
+@app.route("/update", methods=["GET", "POST"])
+def update():
+    if request.method=="GET":
+        return render_template("add-update.html", developer_name=developer, action_name="Update", not_valid=False, show_result=False)
+
+    username=request.form["username"].strip().title()
+    phonenumber=request.form["phonenumber"].strip()
+    message = validation(username, phonenumber)
+    if message == "ok":
+        person_info = find_one(username)
+        if person_info == None:
+            result=f"There is no one with '{username}', no record updated."
+        else:
+            update_person(person_info[0], phonenumber)
+            result=f"Person number updated, ({person_info[2]}---> {phonenumber})"
+        return render_template("add-update.html", developer_name=developer, action_name="Update", not_valid=False, show_result=True, result=result)
+    else:
+        return render_template("add-update.html", developer_name=developer, action_name="Update", not_valid=True, show_result=False, message=message)
 
 
 
