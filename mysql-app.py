@@ -5,11 +5,12 @@ app = Flask(__name__)
 developer = "Jokerinya"
 
 db_endpoint = open("/home/ec2-user/dbserver.endpoint", 'r', encoding='UTF-8') 
+db_password = open("/home/ec2-user/dbserver.passwd", 'r', encoding='UTF-8') 
 
 # Configure mysql database
 app.config['MYSQL_DATABASE_HOST'] = db_endpoint.readline().strip()
 app.config['MYSQL_DATABASE_USER'] = 'admin'
-app.config['MYSQL_DATABASE_PASSWORD'] = 'password'
+app.config['MYSQL_DATABASE_PASSWORD'] = db_password.readline().strip()
 app.config['MYSQL_DATABASE_DB'] = 'clarusway'
 app.config['MYSQL_DATABASE_PORT'] = 3306
 mysql = MySQL()
