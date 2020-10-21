@@ -74,4 +74,4 @@ def add_update_post():
         return render_template("add-update.html", developer_name=developer, action_name="Add or Update", not_valid=True, show_result=False, message=message)
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run(host='0.0.0.0/0', port=80)
