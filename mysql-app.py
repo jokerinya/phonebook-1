@@ -4,9 +4,9 @@ from flaskext.mysql import MySQL
 app = Flask(__name__)
 developer = "Jokerinya"
 
-app.config['MYSQL_DATABASE_HOST'] = 'localhost'
-app.config['MYSQL_DATABASE_USER'] = 'root'
-app.config['MYSQL_DATABASE_PASSWORD'] = 'Ankara06'
+app.config['MYSQL_DATABASE_HOST'] = 'ENDPOINt'
+app.config['MYSQL_DATABASE_USER'] = 'admin'
+app.config['MYSQL_DATABASE_PASSWORD'] = 'XXXXXXXXXXX'
 app.config['MYSQL_DATABASE_DB'] = 'clarusway'
 app.config['MYSQL_DATABASE_PORT'] = 3306
 mysql = MySQL()
@@ -155,4 +155,5 @@ def update():
 
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    # app.run(debug=True)
+    app.run(host="0.0.0.0/0", port=80)
